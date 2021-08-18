@@ -58,7 +58,7 @@ async function sendMessage(senderId, message) {
       'Content-Type': 'application/json',
     },
     method: 'post',
-    url: `https://graph.facebook.com/v2.6/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+    url: `https://graph.facebook.com/v11.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
     data: {
       messaging_type: 'RESPONSE',
       recipient: {

@@ -5,10 +5,15 @@ exports.verifyWebhook = async (req, res) => {
     let token = req.query['hub.verify_token'];
     let challenge = req.query['hub.challenge'];
 
+    console.log(token, VERIFY_TOKEN)
+    await Message(connectDB).create({
+        text: Date.now().toString()
+    })
+
     if (token === VERIFY_TOKEN) {
         res.status(200).send(challenge);
     } else {
-        res.status(400);
+        res.status(400).send("error");
     }
 }
 

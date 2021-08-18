@@ -1,4 +1,7 @@
 const WebhookService = require('./webhook.service');
+const { connectDB } = require('../../helpers/connectDatabase');
+
+const { Message } = require('../../models')
 
 exports.verifyWebhook = async (req, res) => {
     // let mode = req.query['hub.mode'];

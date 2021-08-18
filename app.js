@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const flash = require('connect-flash');
 const session = require('express-session');
+const axios = require('axios')
 const verifyWebhook = require('./helpers/verifyWebhook');
 
 require('dotenv').config();
@@ -32,42 +33,46 @@ app.get('/webhook', verifyWebhook);
 
 app.post('/webhook', function(req, res) { // Phần sử lý tin nhắn của người dùng gửi đến
   try {
-    if (req.body.object === 'page') {
-      req.body.entry.forEach(entry => {
-        entry.messaging.forEach(event => {
-          if (event.message && event.message.text) {
-            sendMessage(event.sender.id, event.message.text);
-          }
-        });
+    console.log(req.body)
+    req.body.entry.forEach(entry => {
+      entry.messaging.forEach(event => {
+        console.log("event", event)
+        if (event.message && event.message.text) {
+          console.log(event.message.text)
+          sendMessage(event.sender.id, event.message.text)
+        }
       });
-  
-      res.status(200).send("OK");
-    }
+    });
+
+    res.status(200).send("OK");
   } catch (err) {
     res.status(404);
   }
 });
 
 // Đây là function dùng api của facebook để gửi tin nhắn
-function sendMessage(senderId, message) {
-  return fetch(
-    `https://graph.facebook.com/v2.6/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
+async function sendMessage(senderId, message) {
+  console.log(message, senderId)
+  axios({
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'post',
+    url: `https://graph.facebook.com/v2.6/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+    data: {
+      messaging_type: 'RESPONSE',
+      recipient: {
+        id: senderId,
       },
-      method: 'POST',
-      body: JSON.stringify({
-        messaging_type: 'RESPONSE',
-        recipient: {
-          id: senderId,
-        },
-        message: {
-          text: message
-        },
-      }),
+      message: {
+        text: message
+      },
     }
-  );
+  })
+  .then()
+  .catch(err => {
+    console.log(err)
+  })
 }
 
 app.use(router); 

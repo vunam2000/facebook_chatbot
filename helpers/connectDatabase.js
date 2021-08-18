@@ -6,7 +6,7 @@ const connectionParams={
     useUnifiedTopology: true 
 }
 
-exports.connectDB = mongoose.connect(`${process.env.DB_HOST}/${process.env.DB_NAME}`, connectionParams)
+exports.connectDB = mongoose.connect(`${DB_HOST}/${DB_NAME}`, connectionParams)
     .then( () => {
     })
     .catch( (err) => {
